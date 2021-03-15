@@ -56,7 +56,6 @@ namespace Demo.Salons.Salons
             result.Id.ShouldNotBe(0);
             result.AddressLine1.ShouldBe("13 Londolozi street");
         }
-
         [Fact]
         public async Task Should_Not_Create_A_Address_Without_AddressLine1()
         {
