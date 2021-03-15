@@ -11,67 +11,61 @@ namespace Demo.Salons.Salons
 {
     public class SupplierAppService_Tests : SalonsApplicationTestBase 
     {
-        private readonly IAddressAppService _addressAppService;
-        public AddressAppService_Tests(IAddressAppService addressAppService)
+        private readonly ISupplierAppService _supplierAppService;
+        public SupplierAppService_Tests(ISupplierAppService supplierAppService)
         {
-            _addressAppService = addressAppService;
+            _supplierAppService = supplierAppService;
         }
 
         [Fact]
-        public async Task Should_Get_List_Of_Addresses()
+        public async Task Should_Get_List_Of_Suppliers()
         {
             //Act
-            var result = await _addressAppService.GetListAsync(new PagedAndSortedResultRequestDto());
+            var result = await _supplierAppService.GetListAsync(new PagedAndSortedResultRequestDto());
 
             //Assert
             result.TotalCount.ShouldBeGreaterThan(0);
-            result.Items.ShouldContain(x => x.AddressLine1 == "41 17 On Forest");
+            result.Items.ShouldContain(x => x.SupplierName == "Magic hair");
         }
         [Fact]
-        public async Task Should_Get_Single_Address()
+        public async Task Should_Get_Single_Supplier()
         {
             //Act
-            var result = await _addressAppService.GetAsync(1);
+            var result = await _supplierAppService.GetAsync(1);
 
             //Assert
             result.ShouldNotBeNull();
         }
         [Fact]
-        public async Task Should_Create_A_Valid_Address()
+        public async Task Should_Create_A_Valid_Supplier()
         {
             //Act
-            var result = await _addressAppService.CreateAsync(
-                new CreateUpdateAddressDto
+            var result = await _supplierAppService.CreateAsync(
+                new CreateUpdateSupplierDto
                 {
-                    AddressLine1 = "13 Londolozi street",
-                    AddressLine2 = "Meadow Ridge",
-                    Surburb = "Moreleta Park",
-                    City = "Pretoria",
-                    PostalCode = "2061"
-
+                   
                 }
             );
 
             //Assert
             result.Id.ShouldNotBe(0);
-            result.AddressLine1.ShouldBe("13 Londolozi street");
+            result.SupplierName.ShouldBe("Magic Nails");
         }
         [Fact]
         public async Task Should_Not_Create_A_Address_Without_AddressLine1()
         {
             var exception = await Assert.ThrowsAsync<AbpValidationException>(async () =>
             {
-                await _addressAppService.CreateAsync(
-                     new CreateUpdateAddressDto
+                await _supplierAppService.CreateAsync(
+                     new CreateUpdateSupplierDto
                      {
-                         AddressLine1 = "",
-                         AddressLine2 = "Test Address"
+                         
                      }
                 );
             });
 
             exception.ValidationErrors
-                .ShouldContain(err => err.MemberNames.Any(mem => mem == "AddressLine1"));
+                .ShouldContain(err => err.MemberNames.Any(mem => mem == "SupplierName"));
         }
     }
 }
