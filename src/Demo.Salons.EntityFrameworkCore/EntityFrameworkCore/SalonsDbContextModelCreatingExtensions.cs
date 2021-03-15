@@ -83,10 +83,6 @@ namespace Demo.Salons.EntityFrameworkCore
                 b.Property(x => x.ContactNumber).HasMaxLength(50);
                 b.Property(x => x.MainContactEmailAddress).HasMaxLength(250);
                 b.Property(x => x.MainContactName).HasMaxLength(150);
-                b.Property(x => x.PhysicalAddress).HasMaxLength(450);
-                b.Property(x => x.PostalAddress).HasMaxLength(450);
-                b.Property(x => x.PostalAddressCode).HasMaxLength(10);
-                b.Property(x => x.PhysicalAddressCode).HasMaxLength(10);
             });
             builder.Entity<Person>(b =>
             {
