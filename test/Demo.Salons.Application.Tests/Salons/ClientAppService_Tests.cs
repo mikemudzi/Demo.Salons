@@ -12,67 +12,72 @@ namespace Demo.Salons.Salons
 {
     public class ClientAppService_Tests : SalonsApplicationTestBase
     {
-        private readonly IAddressAppService _addressAppService;
-        public AddressAppService_Tests(IAddressAppService addressAppService)
+        private readonly IClientAppService _clientAppService;
+        public ClientAppService_Tests(IClientAppService clientAppService)
         {
-            _addressAppService = addressAppService;
+            _clientAppService = clientAppService;
         }
 
         [Fact]
-        public async Task Should_Get_List_Of_Addresses()
+        public async Task Should_Get_List_Of_Clients()
         {
             //Act
-            var result = await _addressAppService.GetListAsync(new PagedAndSortedResultRequestDto());
+            var result = await _clientAppService.GetListAsync(new PagedAndSortedResultRequestDto());
 
             //Assert
             result.TotalCount.ShouldBeGreaterThan(0);
-            result.Items.ShouldContain(x => x.AddressLine1 == "41 17 On Forest");
+            result.Items.ShouldContain(x => x.FirstName == "Test");
+            result.Items.ShouldContain(x => x.LastName == "Client");
         }
         [Fact]
-        public async Task Should_Get_Single_Address()
+        public async Task Should_Get_Single_Client()
         {
             //Act
-            var result = await _addressAppService.GetAsync(1);
+            var result = await _clientAppService.GetAsync(1);
 
             //Assert
             result.ShouldNotBeNull();
         }
         [Fact]
-        public async Task Should_Create_A_Valid_Address()
+        public async Task Should_Create_A_Valid_Client()
         {
             //Act
-            var result = await _addressAppService.CreateAsync(
-                new CreateUpdateAddressDto
+            var result = await _clientAppService.CreateAsync(
+                new CreateUpdateClientDto
                 {
-                    AddressLine1 = "13 Londolozi street",
-                    AddressLine2 = "Meadow Ridge",
-                    Surburb = "Moreleta Park",
-                    City = "Pretoria",
-                    PostalCode = "2061"
-
+                    FirstName = "Demo",
+                    LastName = "Client",
+                    Code = "WALKIN",
+                    CategoryId = 1,
+                    EmailAddress = "demo@testclient.com",
+                    MobileNumber = "+2781758964"
                 }
             );
 
             //Assert
             result.Id.ShouldNotBe(0);
-            result.AddressLine1.ShouldBe("13 Londolozi street");
+            result.EmailAddress.ShouldBe("demo@testclient.com");
         }
         [Fact]
-        public async Task Should_Not_Create_A_Address_Without_AddressLine1()
+        public async Task Should_Not_Create_A_Client_Without_Name()
         {
             var exception = await Assert.ThrowsAsync<AbpValidationException>(async () =>
             {
-                await _addressAppService.CreateAsync(
-                     new CreateUpdateAddressDto
+                await _clientAppService.CreateAsync(
+                     new CreateUpdateClientDto
                      {
-                         AddressLine1 = "",
-                         AddressLine2 = "Test Address"
+                         FirstName = "",
+                         LastName = "",
+                         Code = "WALKIN",
+                         CategoryId = 1,
+                         EmailAddress = "demo@testclient.com",
+                         MobileNumber = "+2781758964"
                      }
                 );
             });
 
             exception.ValidationErrors
-                .ShouldContain(err => err.MemberNames.Any(mem => mem == "AddressLine1"));
+                .ShouldContain(err => err.MemberNames.Any(mem => mem == "FirstName"));
         }
     }
 }
